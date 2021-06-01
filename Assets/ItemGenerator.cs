@@ -11,7 +11,7 @@ public class ItemGenerator : MonoBehaviour
     //cornPrefabを入れる
     public GameObject conePrefab;
   
-    //ゴール地点
+    //
     private float goalPos;
     //アイテムを出すx方向の範囲
     private float posRange = 3.4f;
@@ -20,23 +20,33 @@ public class ItemGenerator : MonoBehaviour
     //Unityちゃんのオブジェクト
     private GameObject unitychan;
 
+    //Unityちゃんと障害物発生の距離
+    private float posObject = 25.0f;
+
+    //Unityちゃんの現在地
+    private float posCurrent;
+
+    //Unityちゃんの過去の位置
+    private float posPast;
+
     // Use this for initialization
     void Start()
     {
         this.unitychan = GameObject.Find("unitychan");
-
+        posPast = this.unitychan.transform.position.z;
     }
     // Update is called once per frame
     void Update() {
-      
-        goalPos = this.unitychan.transform.position.z + 40;
 
-
+        posCurrent = this.unitychan.transform.position.z;
+  
 
         //一定の距離ごとにアイテムを生成
 
-        if ((goalPos % 40) <= 1 && goalPos < 350)
+        if ((posCurrent-posPast)>posObject&&posCurrent<340)
         {
+            goalPos = posCurrent + posObject;
+            Debug.Log(goalPos);
 
             //どのアイテムを出すのかをランダムに設定
             int num = Random.Range(1, 11);
@@ -59,15 +69,15 @@ public class ItemGenerator : MonoBehaviour
                     //アイテムの種類を決める
                     int item = Random.Range(1, 11);
                     //アイテムを置くZ座標のオフセットをランダムに設定
-                    int offsetZ = Random.Range(-10, 30);
+                    int offsetZ = Random.Range(-5, 20);
                    
-                    if (1 <= item && item <= 5)
+                    if (1 <= item && item <= 6)
                     {
                         //コインを生成
                         GameObject coin = Instantiate(coinPrefab);
                         coin.transform.position = new Vector3(posRange * j, coin.transform.position.y, goalPos + offsetZ);
                     }
-                    else if (6 <= item && item <= 8)
+                    else if (7 <= item && item <= 9)
                     {
                         //車を生成
                         GameObject car = Instantiate(carPrefab);
@@ -75,7 +85,7 @@ public class ItemGenerator : MonoBehaviour
                     }
                 }
             }
-
+            posPast = this.unitychan.transform.position.z;
         }   
         
     }
